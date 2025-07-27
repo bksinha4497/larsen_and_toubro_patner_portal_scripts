@@ -32,7 +32,6 @@ FIELDNAMES = [
     "TOTAL_AMT",           # New field: CURRENT_BILL_AMOUNT + TAX_AMT
     "TDS",
     "RETENTION",
-    "SUB_CONTRACT",
     "SUB_CONTRACT_LABOUR",
     "PF_OR_EPS_RECOVERED",
     "ESI_EMPLOYERS_CONTRIBUTION",
@@ -197,8 +196,6 @@ def parse_annexure_deductions(text):
                     deductions["RETENTION"] = f"{float(this_bill_amount):.2f}"
                 elif 'sub - contract (labour)' in desc_lower:
                     deductions["SUB_CONTRACT_LABOUR"] = f"{float(this_bill_amount):.2f}"
-                elif 'sub' in desc_lower and 'contract' in desc_lower and 'labour' not in desc_lower:
-                    deductions["SUB_CONTRACT"] = f"{float(this_bill_amount):.2f}"
                 elif 'pf/eps recovered' in desc_lower or 'pf recovery from sc' in desc_lower:
                     current_val = float(deductions["PF_OR_EPS_RECOVERED"])
                     new_val = float(this_bill_amount)
