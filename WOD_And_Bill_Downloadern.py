@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from datetime import datetime
 from playwright.async_api import async_playwright
-
+#01-Jan-2018 - 31-Dec-2020
 # === Configuration ===
 USERNAME      = os.getenv("LNT_USER", "USER")
 PASSWORD      = os.getenv("LNT_PASS", "PASS")
