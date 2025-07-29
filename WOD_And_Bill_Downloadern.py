@@ -64,13 +64,14 @@ async def process_row(page, row, invoice_no, base_folder):
         date_obj = datetime.now()
     else:
         try:
-            date_obj = datetime.strptime(date_str, "%d-%b-%Y")  # Adjust format if needed
+            date_obj = datetime.strptime(date_str, "%d-%b-%Y")
         except Exception as e:
             logging.warning(f"Failed parsing Registration Date '{date_str}': {e}")
             date_obj = datetime.now()
 
     financial_year = get_financial_year(date_obj)
-    year_folder = base_folder / site_name / financial_year
+    # Swap folder order here
+    year_folder = base_folder / financial_year / site_name
     year_folder.mkdir(parents=True, exist_ok=True)
 
     # Scroll grid so row is visible
@@ -96,17 +97,14 @@ async def process_row(page, row, invoice_no, base_folder):
             logging.info(f"WorkOrder PDF already exists for {work_order_text}, skipping")
     else:
         logging.warning(f"No Work Order link in column 6 for invoice {invoice_no}")
-        # Proceeding without Work Order may be acceptable; optionally handle fallback here
 
-    # --- Now open Invoice detail tab by clicking Invoice Registration Number (1st column) ---
+    # --- Download Bills ---
     inv_span = row.locator("td:nth-child(1) span.eip-link")
     await inv_span.scroll_into_view_if_needed()
     await inv_span.click()
 
-    # Wait for Bills spans to appear in the detail panel
     await page.wait_for_selector("span.eip-link.src-list", timeout=15000)
 
-    # Download Bills into Bills subfolder
     bills_folder = wo_folder / "Bills"
     bills_folder.mkdir(exist_ok=True)
 
@@ -128,7 +126,7 @@ async def process_row(page, row, invoice_no, base_folder):
         await bill_span.click()
         await download_pdf_modal(page, bill_file)
 
-    # Close the invoice tab
+    # Close invoice tab
     await close_invoice_tab(page, invoice_no)
 
 async def get_current_page_number(page):
