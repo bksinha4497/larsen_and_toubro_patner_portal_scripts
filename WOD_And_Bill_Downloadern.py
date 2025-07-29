@@ -103,7 +103,7 @@ async def process_row(page, row, invoice_no, base_folder):
     await inv_span.scroll_into_view_if_needed()
     await inv_span.click()
 
-    await page.wait_for_selector("span.eip-link.src-list", timeout=15000)
+    await page.wait_for_selector("span.eip-link.src-list", timeout=TIMEOUT)
 
     bills_folder = wo_folder / "Bills"
     bills_folder.mkdir(exist_ok=True)
